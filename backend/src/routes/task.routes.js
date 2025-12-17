@@ -9,9 +9,13 @@ router.use((req, res, next) => {
   next();
 });
 
+// Get tasks for a specific project (using query parameter)
+router.get("/", auth(), taskController.getTasksForProject);
+
 router.post("/", auth(), taskController.create);
 router.get("/:taskId", auth(), taskController.getOne);
 router.patch("/:taskId", auth(), taskController.update);
+router.delete("/:taskId", auth(), taskController.deleteTask);
 router.post("/:taskId/comment", auth(), taskController.comment);
 router.post("/:taskId/checklist", auth(), taskController.addChecklist);
 

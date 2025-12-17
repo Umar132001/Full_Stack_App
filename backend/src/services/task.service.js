@@ -46,6 +46,20 @@ export const addComment = async (taskId, userId, text) => {
   return task;
 };
 
+export const deleteTask = async (taskId) => {
+  console.log("🛑 Service: deleteTask()", taskId);
+
+  const task = await Task.findByIdAndDelete(taskId);
+
+  if (!task) {
+    throw new Error("Task not found");
+  }
+
+  console.log("✅ Task deleted:", task._id);
+
+  return task;
+};
+
 export const addChecklistItem = async (taskId, item) => {
   console.log("🧾 Service: addChecklistItem()", taskId, item);
 

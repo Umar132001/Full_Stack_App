@@ -12,11 +12,14 @@ import ProjectDetails from "./pages/projects/ProjectDetails";
 import AppLayout from "./layout/AppLayout";
 import ProtectedRoute from "./routes/ProtectedRoute";
 
+import Tasks from "./pages/tasks/Tasks";
+import TaskCreate from "./pages/tasks/TaskCreate";
+
 export default function App() {
   return (
     <BrowserRouter>
       <Routes>
-        {/* Public */}
+        {/* Public Routes */}
         <Route path="/" element={<Navigate to="/login" replace />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
@@ -35,11 +38,12 @@ export default function App() {
           <Route path="/projects" element={<Projects />} />
           <Route path="/projects/:projectId" element={<ProjectDetails />} />
 
-          {/* placeholders for next modules */}
-          <Route
-            path="/tasks"
-            element={<div className="p-6">Tasks coming soon</div>}
-          />
+          {/* route for tasks list */}
+          <Route path="/tasks/create" element={<TaskCreate />} />
+
+          <Route path="/tasks" element={<Tasks />} />
+
+          {/* Placeholder Routes */}
           <Route
             path="/workspace"
             element={<div className="p-6">Workspace coming soon</div>}
