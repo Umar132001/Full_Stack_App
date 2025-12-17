@@ -2,44 +2,53 @@ import { useState } from "react";
 import Button from "../ui/Button";
 import ConfirmModal from "../ui/ConfirmModal"; // Modal for confirming task deletion
 
-export default function TaskCard({ task, onEdit, onDelete }) {
-  const [deleteOpen, setDeleteOpen] = useState(false);
+// components/tasks/TaskCard.jsx
+export default function TaskCard({ task, onOpen }) {
+  const statusBadge =
+    task.status === "completed"
+      ? "bg-green-100 text-green-800"
+      : task.status === "in-progress"
+      ? "bg-blue-100 text-blue-800"
+      : "bg-slate-100 text-slate-700";
+
+  const cardTint =
+    task.status === "completed"
+      ? "bg-green-100/70"
+      : task.status === "in-progress"
+      ? "bg-blue-100/70"
+      : "bg-white";
+
+  const due = task.dueDate ? new Date(task.dueDate).toLocaleDateString() : "—";
 
   return (
-    <div
-      className={`rounded-lg border p-4 shadow-sm transition ${
-        task.status === "completed"
-          ? "bg-green-200"
-          : task.status === "in-progress"
-          ? "bg-blue-200"
-          : ""
-      }`}
+    <button
+      type="button"
+      onClick={() => onOpen(task)}
+      className={`group w-full text-left rounded-2xl border border-slate-200 ${cardTint} p-5 shadow-sm transition hover:-translate-y-1 hover:shadow-md focus:outline-none focus:ring-2 focus:ring-slate-200`}
     >
-      <h3 className="text-xl font-semibold">{task.title}</h3>
-      <p className="mt-2 text-sm text-slate-600">{task.status}</p>
-      <p className="mt-2 text-sm text-slate-500">
-        Due Date: {new Date(task.dueDate).toLocaleDateString()}
-      </p>
-      <p className="mt-2 text-sm text-slate-600">
-        Task Details: {task.description}
-      </p>
+      <div className="flex items-start justify-between gap-3">
+        <h3 className="text-lg font-semibold text-slate-900 line-clamp-1">
+          {task.title}
+        </h3>
 
-      <div className="flex justify-between mt-4">
-        <Button onClick={() => onEdit(task)} className="bg-slate-900">
-          Edit Task
-        </Button>
-        <Button onClick={() => setDeleteOpen(true)} className="bg-red-600">
-          Delete Task
-        </Button>
+        <span
+          className={`shrink-0 rounded-full px-3 py-1 text-xs font-medium ${statusBadge}`}
+        >
+          {task.status}
+        </span>
       </div>
 
-      <ConfirmModal
-        open={deleteOpen}
-        title="Delete Task"
-        description="Are you sure you want to delete this task?"
-        onConfirm={() => onDelete(task._id)} // Call onDelete with task._id
-        onClose={() => setDeleteOpen(false)} // Close modal on cancel
-      />
-    </div>
+      {task.description && (
+        <p className="mt-2 text-sm text-slate-600 line-clamp-2">
+          {task.description}
+        </p>
+      )}
+
+      <div className="mt-4 text-xs text-slate-500">
+        <span className="font-medium text-slate-600">Due:</span> {due}
+      </div>
+
+      <div className="mt-3 text-xs text-slate-400">Click to view details</div>
+    </button>
   );
 }
