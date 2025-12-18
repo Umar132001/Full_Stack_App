@@ -5,11 +5,13 @@ import Input from "../../components/ui/Input";
 import Button from "../../components/ui/Button";
 import { loginApi, getMeApi } from "../../api/auth.api";
 import { Link, useNavigate } from "react-router-dom";
+import { Eye, EyeOff } from "lucide-react";
 
 export default function Login() {
   const nav = useNavigate();
   const [loading, setLoading] = useState(false);
   const [form, setForm] = useState({ email: "", password: "" });
+  const [showPassword, setShowPassword] = useState(false);
 
   const onSubmit = async (e) => {
     e.preventDefault();
@@ -49,14 +51,25 @@ export default function Login() {
           placeholder="you@email.com"
           required
         />
-        <Input
-          label="Password"
-          type="password"
-          value={form.password}
-          onChange={(e) => setForm({ ...form, password: e.target.value })}
-          placeholder="••••••••"
-          required
-        />
+        {/* Password with eye icon */}
+        <div className="relative">
+          <Input
+            label="Password"
+            type={showPassword ? "text" : "password"}
+            value={form.password}
+            onChange={(e) => setForm({ ...form, password: e.target.value })}
+            placeholder="••••••••"
+            required
+          />
+
+          <button
+            type="button"
+            onClick={() => setShowPassword((s) => !s)}
+            className="absolute right-3 top-10 text-slate-500 hover:text-slate-700"
+          >
+            {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+          </button>
+        </div>
 
         <Button loading={loading}>Login</Button>
 

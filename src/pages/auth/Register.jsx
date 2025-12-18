@@ -5,17 +5,35 @@ import Input from "../../components/ui/Input";
 import Button from "../../components/ui/Button";
 import { registerApi } from "../../api/auth.api";
 import { Link, useNavigate } from "react-router-dom";
+import { Eye, EyeOff } from "lucide-react";
 
 export default function Register() {
   const nav = useNavigate();
   const [loading, setLoading] = useState(false);
-  const [form, setForm] = useState({ name: "", email: "", password: "" });
+  const [form, setForm] = useState({
+    name: "",
+    email: "",
+    password: "",
+    confirmPassword: "",
+  });
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const onSubmit = async (e) => {
     e.preventDefault();
+
+    if (form.password !== form.confirmPassword) {
+      toast.error("Passwords do not match");
+      return;
+    }
+
     setLoading(true);
     try {
-      const res = await registerApi(form);
+      const res = await registerApi({
+        name: form.name,
+        email: form.email,
+        password: form.password,
+      });
       toast.success(
         res.data?.message || "Registered! Please verify your email."
       );
@@ -48,14 +66,47 @@ export default function Register() {
           placeholder="you@email.com"
           required
         />
-        <Input
-          label="Password"
-          type="password"
-          value={form.password}
-          onChange={(e) => setForm({ ...form, password: e.target.value })}
-          placeholder="••••••••"
-          required
-        />
+
+        {/* password */}
+        <div className="relative">
+          <Input
+            label="Password"
+            type={showPassword ? "text" : "password"}
+            value={form.password}
+            onChange={(e) => setForm({ ...form, password: e.target.value })}
+            placeholder="••••••••"
+            required
+          />
+
+          <button
+            type="button"
+            onClick={() => setShowPassword((s) => !s)}
+            className="absolute right-3 top-10 text-slate-500 hover:text-slate-700"
+          >
+            {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+          </button>
+        </div>
+
+        {/* Confirm password */}
+        <div className="relative">
+          <Input
+            label="Confirm Password"
+            type={showConfirmPassword ? "text" : "password"}
+            value={form.confirmPassword}
+            onChange={(e) =>
+              setForm({ ...form, confirmPassword: e.target.value })
+            }
+            placeholder="••••••••"
+            required
+          />
+          <button
+            type="button"
+            onClick={() => setShowConfirmPassword((s) => !s)}
+            className="absolute right-3 top-10 text-slate-500 hover:text-slate-700"
+          >
+            {showConfirmPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+          </button>
+        </div>
         <Button loading={loading}>Create account</Button>
 
         <p className="text-center text-sm text-slate-600">
