@@ -8,6 +8,10 @@ import ResetPassword from "./pages/auth/ResetPassword";
 import Dashboard from "./pages/Dashboard";
 import Projects from "./pages/projects/Projects";
 import ProjectDetails from "./pages/projects/ProjectDetails";
+import WorkspaceDashboard from "./pages/workspace/WorkspaceDashboard";
+import WorkspaceDetailsPage from "./pages/workspace/WorkspaceDetailsPage";
+import WorkspaceSettingsPage from "./pages/workspace/WorkspaceSettingsPage";
+import WorkspaceCreatePage from "./pages/workspace/WorkspaceCreatePage";
 
 import AppLayout from "./layout/AppLayout";
 import ProtectedRoute from "./routes/ProtectedRoute";
@@ -38,16 +42,23 @@ export default function App() {
           <Route path="/projects" element={<Projects />} />
           <Route path="/projects/:projectId" element={<ProjectDetails />} />
 
-          {/* route for tasks list */}
+          {/* Task Routes */}
           <Route path="/tasks/create" element={<TaskCreate />} />
-
           <Route path="/tasks" element={<Tasks />} />
 
-          {/* Placeholder Routes */}
+          {/* Workspace Routes */}
+          <Route path="/workspace/create" element={<WorkspaceCreatePage />} />
+          <Route path="/workspace" element={<WorkspaceDashboard />} />
           <Route
-            path="/workspace"
-            element={<div className="p-6">Workspace coming soon</div>}
+            path="/workspace/:workspaceId"
+            element={<WorkspaceDetailsPage />}
           />
+          <Route
+            path="/workspace/settings/:workspaceId"
+            element={<WorkspaceSettingsPage />}
+          />
+
+          {/* Placeholder Routes */}
           <Route
             path="/reports"
             element={<div className="p-6">Reports coming soon</div>}

@@ -34,6 +34,21 @@ export const getWorkspace = catchAsync(async (req, res) => {
   res.json({ success: true, workspace });
 });
 
+// Fetch all workspaces for the logged-in user
+export const getWorkspaces = catchAsync(async (req, res) => {
+  const workspaces = await Workspace.find({ owner: req.user.id })
+    .populate("owner", "name email")
+    .populate("members.user", "name email");
+
+  if (!workspaces || workspaces.length === 0) {
+    return res
+      .status(404)
+      .json({ success: false, message: "No workspaces found" });
+  }
+
+  res.json({ success: true, workspaces });
+});
+
 // Add member to workspace
 export const addMember = catchAsync(async (req, res) => {
   const { userId, role } = req.body;
@@ -58,4 +73,41 @@ export const addMember = catchAsync(async (req, res) => {
   await workspace.save();
 
   res.json({ success: true, message: "User added to workspace" });
+});
+
+// Remove member from workspace
+export const removeMember = catchAsync(async (req, res) => {
+  const { userId } = req.body; // We will pass the userId in the request body
+
+  const workspace = await Workspace.findById(req.params.workspaceId);
+
+  if (!workspace) {
+    throw new ApiError(404, "Workspace not found");
+  }
+
+  // Check if the user is part of the workspace
+  const memberIndex = workspace.members.findIndex(
+    (member) => member.user.toString() === userId
+  );
+
+  if (memberIndex === -1) {
+    throw new ApiError(404, "User not found in this workspace");
+  }
+
+  // Remove the member from the workspace's members list
+  workspace.members.splice(memberIndex, 1);
+  await workspace.save();
+
+  res.json({ success: true, message: "User removed from workspace" });
+});
+
+// Delete workspace
+export const deleteWorkspace = catchAsync(async (req, res) => {
+  const workspace = await Workspace.findByIdAndDelete(req.params.workspaceId);
+
+  if (!workspace) {
+    throw new ApiError(404, "Workspace not found");
+  }
+
+  res.json({ success: true, message: "Workspace deleted successfully" });
 });

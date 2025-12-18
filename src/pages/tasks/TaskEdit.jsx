@@ -24,8 +24,8 @@ export default function TaskEdit() {
     e.preventDefault();
 
     try {
-      await updateTaskApi(task._id, task); // Update the task
-      navigate(`/tasks`); // Redirect back to the tasks page
+      await updateTaskApi(task._id, task);
+      navigate(`/tasks`);
     } catch (error) {
       console.error("Error updating task:", error);
     }

@@ -13,7 +13,8 @@ function generateToken(userId, expires, secret) {
 
 // Generate Auth tokens (access and refresh)
 export async function generateAuthTokens(user) {
-  const accessExp = new Date(Date.now() + 15 * 60 * 1000); // 15 mins
+  const accessExp = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
+  // + 15 * 60 * 1000); // 15 mins
   const refreshExp = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000); // 7 days
 
   const accessToken = generateToken(
