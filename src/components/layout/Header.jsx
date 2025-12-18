@@ -19,7 +19,7 @@ export default function Header() {
       <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
         {/* Logo */}
         <Link to="/dashboard" className="text-xl font-bold text-slate-900">
-          Work<span className="text-slate-500">Space</span>
+          Team<span className="text-slate-500">Flow</span>
         </Link>
 
         {/* Navigation */}

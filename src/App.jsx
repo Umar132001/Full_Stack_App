@@ -19,6 +19,13 @@ import ProtectedRoute from "./routes/ProtectedRoute";
 import Tasks from "./pages/tasks/Tasks";
 import TaskCreate from "./pages/tasks/TaskCreate";
 
+import ReportDashboard from "./pages/reports/ReportDashboard";
+import BurndownReport from "./pages/reports/BurndownReport";
+import VelocityReport from "./pages/reports/VelocityReport";
+// import WorkloadReport from "./pages/reports/WorkloadReport";
+// import RecurringTasksReport from "./pages/reports/RecurringTasksReport";
+import TimeTrackingReport from "./pages/reports/TimeTrackingReport";
+
 export default function App() {
   return (
     <BrowserRouter>
@@ -59,9 +66,14 @@ export default function App() {
           />
 
           {/* Placeholder Routes */}
+          <Route path="/reports" element={<ReportDashboard />} />
+          <Route path="/reports/burndown" element={<BurndownReport />} />
+          <Route path="/reports/velocity" element={<VelocityReport />} />
+          {/* <Route path="/reports/workload" element={<WorkloadReport />} />
+          <Route path="/reports/recurring" element={<RecurringTasksReport />} /> */}
           <Route
-            path="/reports"
-            element={<div className="p-6">Reports coming soon</div>}
+            path="/reports/time-tracking"
+            element={<TimeTrackingReport />}
           />
         </Route>
       </Routes>
