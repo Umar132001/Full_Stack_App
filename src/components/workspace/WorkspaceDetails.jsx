@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import Button from "../ui/Button";
 import AddMemberModal from "./AddMemberModal";
+import ConfirmModal from "../ui/ConfirmModal";
 import {
   removeMemberFromWorkspaceApi,
   deleteWorkspaceApi,
@@ -11,6 +12,9 @@ import { Link } from "react-router-dom";
 
 export default function WorkspaceDetails({ workspace }) {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [confirmOpen, setConfirmOpen] = useState(false);
+  const [confirmRemoveOpen, setConfirmRemoveOpen] = useState(false);
+  const [selectedMemberId, setSelectedMemberId] = useState(null);
   const navigate = useNavigate();
 
   const handleAddMemberClick = () => {
@@ -41,6 +45,44 @@ export default function WorkspaceDetails({ workspace }) {
     }
   };
 
+  // when user clicks "Remove" on a member
+  const openRemoveConfirm = (userId) => {
+    setSelectedMemberId(userId);
+    setConfirmRemoveOpen(true);
+  };
+
+  // when user confirms remove in modal
+  const confirmRemoveMember = async () => {
+    if (!selectedMemberId) return;
+    try {
+      await removeMemberFromWorkspaceApi(workspace._id, {
+        userId: selectedMemberId,
+      });
+      toast.success("Member removed successfully!");
+      setConfirmRemoveOpen(false);
+      setSelectedMemberId(null);
+      navigate(0);
+    } catch (error) {
+      toast.error("Failed to remove member");
+    }
+  };
+
+  // when user clicks "Delete Workspace" button
+  const openDeleteWorkspaceConfirm = () => {
+    setConfirmOpen(true);
+  };
+
+  const confirmDeleteWorkspace = async () => {
+    try {
+      await deleteWorkspaceApi(workspace._id);
+      toast.success("Workspace deleted successfully!");
+      setConfirmOpen(false);
+      navigate("/workspace");
+    } catch (error) {
+      toast.error("Failed to delete workspace");
+    }
+  };
+
   return (
     <div className="p-6 bg-white rounded-lg shadow-lg max-w-3xl mx-auto">
       <h2 className="text-2xl font-semibold text-slate-900 mb-4">
@@ -62,7 +104,7 @@ export default function WorkspaceDetails({ workspace }) {
               <span className="text-sm text-slate-500">{member.role}</span>
               <button
                 className="text-red-500 hover:text-red-700"
-                onClick={() => handleRemoveMember(member.user._id)}
+                onClick={() => openRemoveConfirm(member.user._id)}
               >
                 Remove
               </button>
@@ -84,16 +126,39 @@ export default function WorkspaceDetails({ workspace }) {
           Edit Workspace
         </Button> */}
 
-        <Button
-          onClick={handleDeleteWorkspace}
-          className="bg-red-600 text-white"
+        <button
+          onClick={openDeleteWorkspaceConfirm}
+          className="rounded-lg bg-red-600 px-4 py-2 text-sm font-medium text-white hover:bg-red-700 disabled:opacity-60"
         >
           Delete Workspace
-        </Button>
+        </button>
       </div>
       {isModalOpen && (
         <AddMemberModal workspaceId={workspace._id} onClose={closeModal} />
       )}
+
+      {/* Confirm remove member */}
+      <ConfirmModal
+        open={confirmRemoveOpen}
+        title="Remove Member"
+        description="Are you sure you want to remove this member from the workspace?"
+        confirmText="Remove"
+        onClose={() => {
+          setConfirmRemoveOpen(false);
+          setSelectedMemberId(null);
+        }}
+        onConfirm={confirmRemoveMember}
+      />
+
+      {/* Confirm delete workspace */}
+      <ConfirmModal
+        open={confirmOpen}
+        title="Delete Workspace"
+        description="This will delete the workspace and cannot be undone."
+        confirmText="Delete"
+        onClose={() => setConfirmOpen(false)}
+        onConfirm={confirmDeleteWorkspace}
+      />
     </div>
   );
 }
